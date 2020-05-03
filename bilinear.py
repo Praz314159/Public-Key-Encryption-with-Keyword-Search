@@ -56,6 +56,8 @@ class BilinearMap:
         return (gr, H2_t)
 
     def trapdoor(self, W):
+        if W not in self.keywords:
+            raise Exception("invalid keyword")
         return self.H1(W) ** self.key.priv
 
     def test(self, S, Tw):
