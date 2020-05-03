@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 #! /usr/bin/python3
 """
  The following program is intended to demonstrate the concept of
