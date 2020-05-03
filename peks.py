@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #! /usr/bin/python3
 """
  The following program is intended to demonstrate the concept of
@@ -19,4 +20,18 @@ import bilinear
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser()
 	parser.add_argment("-bm")
+
+	s = int(sys.argv[1])
+	kw = sys.argv[2]
+
+	peks = bilinear.BilinearMap(kw=sys.argv[3:], s=s)
+	ciphers = [peks.peks(W) for W in sys.argv[3:]]
+	Tw = peks.trapdoor(kw)
+
+	for i, S in enumerate(ciphers):
+		if peks.test(S, Tw):
+			print("kw is:", sys.argv[i+3])
+			exit(1)
+
+	print("kw not found")
 
