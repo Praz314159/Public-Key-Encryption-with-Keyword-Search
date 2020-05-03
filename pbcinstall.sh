@@ -3,6 +3,8 @@
 dir=/tmp/pbcbuild
 mkdir -p $dir
 
+[ "$(id -u)" -ne 0 ] && echo "Run the script as root" && exit 1
+
 type apt && apt update && apt install -y curl git make flex bison python3 python3-pip libgmp-dev
 
 cd "$dir" &&
