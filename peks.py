@@ -26,6 +26,10 @@ keywords = []
 mode = None
 security_param = None
 
+def dprint(*args):
+	if debug:
+		print(*args)
+
 def load_file(filename):
 	with open(filename,'r') as f:
 		kw_in = f.read().split("\n")
@@ -41,19 +45,21 @@ def process_inputs():
 		else:
 			peks = bilinear.BilinearMap(kw=input_kw)
 	elif mode == "td":
-		peks = TrapdoorPermutation(s=security_param, keywords=input_kw)
-		peks.keygen()
-
+		if security_param:
+			peks = TrapdoorPermutation(s=security_param, keywords=input_kw)
+			peks.keygen()
+		else:
+			raise Exception("Security-Parameter is required for Trapdoor mode")
 	else:
 		raise Exception("Logic Error: unsupported mode [%s]!" % mode)
 
 	ciphers = [peks.peks(W) for W in keywords]
-	#pprint(ciphers)
+
 	Tw = peks.trapdoor(target)
-	#pprint(Tw)
+
 	for i, S in enumerate(ciphers):
 		if peks.test(S, Tw):
-			print(f"Keyword is: {keywords[i]}")
+			print(f"Keyword found at position {i}: {keywords[i]}")
 			return
 	print("No keyword found!")
 
@@ -72,9 +78,12 @@ if __name__ == "__main__":
 		help="Defines the list of encrypted keywords to be tested.")
 	parser.add_argument("-kf","--keywords-file", required=False,
 		help="Define a new-line separated file to read the encrypted keywords to be tested.")
+	parser.add_argument("-d","--debug",action="store_true",default=False)
 	args = parser.parse_args()
 
-	print(args)
+	debug = args.debug
+
+	dprint(args)
 	security_param = args.security_param
 	mode = args.mode
 	target = args.test
@@ -89,9 +98,9 @@ if __name__ == "__main__":
 			sys.exit(1)
 
 	# Sanity Check
-	print(f"Mode: {mode}")
-	print(f"Security-Parameter: {security_param}")
-	print(f"Target: {target}")
-	print(f"Keywords: {', '.join(keywords)}")
+	dprint(f"Mode: {mode}")
+	dprint(f"Security-Parameter: {security_param}")
+	dprint(f"Target: {target}")
+	dprint(f"Keywords: {', '.join(keywords)}")
 
 	process_inputs()
