@@ -65,7 +65,7 @@ class TrapdoorPermutation:
                 f.write(v[1])
                 f.write(b'\n' * 3)
 
-    def PEKS(self, W=None) -> '(M,E[Pkw, M])':
+    def peks(self, W=None) -> '(M,E[Pkw, M])':
         '''PEKS takes as input a public key, and a keyword, returns PEKS(A,W)=(M,E[PKw,M])
         PEKS can be called with a keyword, or with no argument'''
 
@@ -90,14 +90,14 @@ class TrapdoorPermutation:
                 self._cipher.append(S)
             return self._cipher
 
-    def Trapdoor(self, W) -> 'RSA key object':
+    def trapdoor(self, W) -> 'RSA key object':
         '''Takes a keyword, and returns an RSA key object'''
         if W in self.keywords:
             return self.keys[W]
         else:
             raise Exception("invalid keyword")
 
-    def Test(self, S, Tw) -> 'Bool 1 or 0':
+    def test(self, S, Tw) -> 'Bool 1 or 0':
         '''Returns 1 if a keyword is found, 0 otherwise'''
         cipher = PKCS1_OAEP.new(Tw)
         try:
