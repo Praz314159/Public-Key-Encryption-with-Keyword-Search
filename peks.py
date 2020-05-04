@@ -19,7 +19,7 @@ import sys
 import argparse
 import bilinear
 from pprint import pprint
-# import trapdoor_permutation # or whatever Hoa names it
+from TrapdoorPermutation import TrapdoorPermutation
 
 target = None
 keywords = []
@@ -41,8 +41,8 @@ def process_inputs():
 		else:
 			peks = bilinear.BilinearMap(kw=input_kw)
 	elif mode == "td":
-		# peks = hao
-		print("Not implemented yet.")
+		peks = TrapdoorPermutation(s=security_param, keywords=input_kw)
+		print("APIs do not match. Exiting...")
 		return
 	else:
 		raise Exception("Logic Error: unsupported mode [%s]!" % mode)
