@@ -79,7 +79,7 @@ if __name__ == "__main__":
 		help="Defines the list of encrypted keywords to be tested.")
 	parser.add_argument("-kf","--keywords-file", required=False,
 		help="Define a new-line separated file to read the encrypted keywords to be tested.")
-	parser.add_argument("-d","--debug",action="store_true",default=False)
+	parser.add_argument("-d","--debug",action="store_true",default=False, help="Turns on debugging mode.")
 	args = parser.parse_args()
 
 	debug = args.debug
