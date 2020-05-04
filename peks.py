@@ -70,7 +70,8 @@ def process_inputs():
 """
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser()
-	parser.add_argument("-sp","--security-param",type=int, required=False)
+	parser.add_argument("-sp","--security-param",type=int, required=False, 
+		help="Defines the security parameter to be supplied to the constructor. This is mode specific (160 vs. 1024).")
 	parser.add_argument("-m","--mode", choices=["bm","td"],default="bm",
 		help="Defines the mode used for the trapdoor. (Bilinear Matrix/ Trapdoor)")
 	parser.add_argument("-t","--test",required=True,
