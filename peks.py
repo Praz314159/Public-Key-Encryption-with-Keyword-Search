@@ -49,7 +49,8 @@ def process_inputs():
 			peks = TrapdoorPermutation(s=security_param, keywords=input_kw)
 			peks.keygen()
 		else:
-			raise Exception("Security-Parameter is required for Trapdoor mode")
+			peks = TrapdoorPermutation(keywords=input_kw)
+			peks.keygen()
 	else:
 		raise Exception("Logic Error: unsupported mode [%s]!" % mode)
 
