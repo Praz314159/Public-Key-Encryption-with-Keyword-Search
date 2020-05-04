@@ -17,12 +17,14 @@
 """
 import sys
 import argparse
-# import bilinear # cannot import until setup is ready
+import bilinear
+from pprint import pprint
 # import trapdoor_permutation # or whatever Hoa names it
 
 target = None
 keywords = []
 mode = None
+security_param = None
 
 def load_file(filename):
 	with open(filename,'r') as f:
@@ -30,6 +32,30 @@ def load_file(filename):
 	keywords.extend(kw_in)
 
 
+def process_inputs():
+	# Adding target to keywords for initializing Bilinear Map
+	input_kw = list(set(keywords) | set((target,)))
+	if mode == 'bm':
+		if security_param:
+			peks = bilinear.BilinearMap(kw=input_kw, s=security_param)
+		else:
+			peks = bilinear.BilinearMap(kw=input_kw)
+	elif mode == "td":
+		# peks = hao
+		print("Not implemented yet.")
+		return
+	else:
+		raise Exception("Logic Error: unsupported mode [%s]!" % mode)
+
+	ciphers = [peks.peks(W) for W in keywords]
+	#pprint(ciphers)
+	Tw = peks.trapdoor(target)
+	#pprint(Tw)
+	for i, S in enumerate(ciphers):
+		if peks.test(S, Tw):
+			print(f"Keyword is: {keywords[i]}")
+			return
+	print("No keyword found!")
 
 
 """
@@ -37,8 +63,9 @@ def load_file(filename):
 """
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser()
-	parser.add_argument("-sp","--security-param", choices=["bm","td"],default="bm",
-		help="Defines the security parameter used for the trapdoor.")
+	parser.add_argument("-sp","--security-param",type=int, required=False)
+	parser.add_argument("-m","--mode", choices=["bm","td"],default="bm",
+		help="Defines the mode used for the trapdoor. (Bilinear Matrix/ Trapdoor)")
 	parser.add_argument("-t","--test",required=True,
 		help="Defines the target keyword to search/test for.")
 	parser.add_argument("-k","--keywords",nargs="+",required=False,
@@ -47,10 +74,13 @@ if __name__ == "__main__":
 		help="Define a new-line separated file to read the encrypted keywords to be tested.")
 	args = parser.parse_args()
 
-	mode = args.security_param
+	print(args)
+	security_param = args.security_param
+	mode = args.mode
 	target = args.test
 	if args.keywords:
 		keywords.extend(args.keywords)
+		# Does target need to be in keywords???
 	else:
 		if args.keywords_file:
 			load_file(args.keywords_file)
@@ -60,5 +90,8 @@ if __name__ == "__main__":
 
 	# Sanity Check
 	print(f"Mode: {mode}")
+	print(f"Security-Parameter: {security_param}")
 	print(f"Target: {target}")
 	print(f"Keywords: {', '.join(keywords)}")
+
+	process_inputs()
