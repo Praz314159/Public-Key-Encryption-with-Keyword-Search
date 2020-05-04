@@ -42,8 +42,8 @@ def process_inputs():
 			peks = bilinear.BilinearMap(kw=input_kw)
 	elif mode == "td":
 		peks = TrapdoorPermutation(s=security_param, keywords=input_kw)
-		print("APIs do not match. Exiting...")
-		return
+		peks.keygen()
+
 	else:
 		raise Exception("Logic Error: unsupported mode [%s]!" % mode)
 
