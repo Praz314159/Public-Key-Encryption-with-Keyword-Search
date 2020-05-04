@@ -9,7 +9,7 @@ import random, time, sys
 
 class TrapdoorPermutation:
 
-    def __init__(self, s, keywords, cipher=None):
+    def __init__(self, keywords, s=1024, cipher=None):
         '''s is the security parameter, keywords is a list of keywords
         _cipher is optional and holds all the ciphertext S'''
         self.s = s
