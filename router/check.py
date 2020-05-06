@@ -39,7 +39,7 @@ else:
 lines = body.splitlines()
 
 n = 0
-while not lines[n].startswith("-----BEGIN PEKS"):
+while n < len(lines) and not lines[n].startswith("-----BEGIN PEKS"):
     n += 1
 
 Wx = set()
