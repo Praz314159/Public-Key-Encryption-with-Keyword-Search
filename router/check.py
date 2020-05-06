@@ -28,9 +28,7 @@ for f in glob.glob(os.path.join(d, "*.td")):
     td[W] = Element(bm.key.pairing, G1, value=s)
 
 # parse the email
-f = stdin
-f = open("/home/dms/mail.txt")
-mail = email.message_from_file(f)
+mail = email.message_from_file(stdin)
 if mail.is_multipart():
     for part in mail.get_payload():
         if part.get_content_type() == 'text/plain':
