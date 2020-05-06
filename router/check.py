@@ -6,6 +6,7 @@ import base64
 import glob
 from pypbc import Element, G1
 import email
+import quopri
 
 def b64(s):
     return base64.b64decode(s.encode('utf-8'))
@@ -36,6 +37,7 @@ if mail.is_multipart():
 else:
     body = part.get_payload()
 
+body = quopri.decodestring(body)
 lines = body.splitlines()
 
 n = 0
