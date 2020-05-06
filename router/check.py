@@ -35,10 +35,10 @@ if mail.is_multipart():
         if part.get_content_type() == 'text/plain':
             body = part.get_payload()
 else:
-    body = part.get_payload()
+    body = mail.get_payload()
 
 body = quopri.decodestring(body)
-lines = body.splitlines()
+lines = body.decode('utf-8').splitlines()
 
 n = 0
 while n < len(lines) and not lines[n].startswith("-----BEGIN PEKS"):
