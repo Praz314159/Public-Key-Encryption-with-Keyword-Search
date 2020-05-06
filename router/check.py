@@ -33,12 +33,15 @@ mail = email.message_from_file(stdin)
 if mail.is_multipart():
     for part in mail.get_payload():
         if part.get_content_type() == 'text/plain':
-            body = part.get_payload()
+            body = part
 else:
-    body = mail.get_payload()
+    body = mail
 
-body = quopri.decodestring(body)
-lines = body.decode('utf-8').splitlines()
+pl = body.get_payload()
+cte = 'Content-Transfer-Encoding'
+if cte in body and body[cte] == 'quoted-printable':
+    pl = quopri.decodestring(pl).decode('utf-8')
+lines = pl.splitlines()
 
 n = 0
 while n < len(lines) and not lines[n].startswith("-----BEGIN PEKS"):
