@@ -18,6 +18,33 @@ class Key:
         self.p = int(rstr.split(' ')[1])
         self.logp = math.ceil(math.log(self.p, 2))
 
+    def store(self, d):
+        if not os.path.exists(d):
+            os.mkdir(d)
+        def w(f, o):
+            with open(os.path.join(d, f), 'w') as fh:
+                fh.write(str(o))
+        w("params", self.params)
+        w("priv", self.priv)
+        w("pubg", self.pubg)
+        w("pubh", self.pubh)
+
+    @classmethod
+    def load(cls, d):
+        if not os.path.exists(d):
+            raise Exception("no key dir")
+        def r(f):
+            with open(os.path.join(d, f), 'r') as fh:
+                return fh.read()
+        params = Parameters(param_string=r("params"))
+        pairing = Pairing(params)
+        priv = None
+        if os.path.exists(os.path.join(d, 'priv')): # optional
+            priv = Element(pairing, Zr, value=r("priv"))
+        pubg = Element(pairing, G1, value=r("pubg"))
+        pubh = Element(pairing, G1, value=r("pubh"))
+        return Key(params, priv, pubg, pubh)
+
 class BilinearMap:
     def __init__(self, kw=[], key=None, s=160):
         self.keywords = kw

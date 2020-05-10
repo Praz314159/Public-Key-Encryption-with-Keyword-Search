@@ -20,6 +20,7 @@ import argparse
 import bilinear
 from pprint import pprint
 from TrapdoorPermutation import TrapdoorPermutation
+from time import time
 
 target = None
 keywords = []
@@ -39,6 +40,7 @@ def load_file(filename):
 def process_inputs():
 	# Adding target to keywords for initializing Bilinear Map
 	input_kw = list(set(keywords) | set((target,)))
+	genstart = time()
 	if mode == 'bm':
 		if security_param:
 			peks = bilinear.BilinearMap(kw=input_kw, s=security_param)
@@ -53,17 +55,31 @@ def process_inputs():
 			peks.keygen()
 	else:
 		raise Exception("Logic Error: unsupported mode [%s]!" % mode)
+	genstop = time()
 
+	cipherstart = time()
 	ciphers = [peks.peks(W) for W in keywords]
+	cipherstop = time()
 
+	trapdoorstart = time()
 	Tw = peks.trapdoor(target)
+	trapdoorstop = time()
 
+	checkstart = time()
 	for i, S in enumerate(ciphers):
-		if peks.test(S, Tw):
+		if peks.test(S, Tw) and not args.time:
 			print(f"Keyword found at position {i}: {keywords[i]}")
 			return
-	print("No keyword found!")
+	checkstop =  time()
 
+	if not args.time:
+		print("No keyword found!")
+	else:
+		gentime = genstop - genstart
+		ciphertime = cipherstop - cipherstart
+		trapdoortime = trapdoorstop - trapdoorstart
+		checktime = checkstop - checkstart
+		print(mode, security_param, len(input_kw), gentime, ciphertime, trapdoortime, checktime, sep=',')
 
 """
  Sample usage: peks <securiy_parameter> <keyword to search> <keywords....>
@@ -76,6 +92,8 @@ if __name__ == "__main__":
 		help="Defines the mode used for the trapdoor. (Bilinear Matrix/ Trapdoor)")
 	parser.add_argument("-t","--test",required=True,
 		help="Defines the target keyword to search/test for.")
+	parser.add_argument("--time",required=False, action='store_true',
+		help="Print timing statistics")
 	parser.add_argument("-k","--keywords",nargs="+",required=False,
 		help="Defines the list of encrypted keywords to be tested.")
 	parser.add_argument("-kf","--keywords-file", required=False,
