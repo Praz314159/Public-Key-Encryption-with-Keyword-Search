@@ -8,9 +8,9 @@ class Key:
     def __init__(self, params, priv, pubg, pubh):
         self.params = params
         self.pairing = Pairing(params)
-        self.priv = priv
-        self.pubg = pubg
-        self.pubh = pubh
+        self.priv = priv #private key 
+        self.pubg = pubg #g's public key
+        self.pubh = pubh #h's public key 
 
         rstr = [l for l in str(params).split('\n') if l.startswith('r')]
         assert(len(rstr) == 1)
