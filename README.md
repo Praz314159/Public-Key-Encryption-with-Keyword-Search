@@ -13,7 +13,13 @@ Bob can then use Alice's public key to encrypt each of the keywords in his email
 arrives at the server. Alice can instruct the server to handle each situation accordingly when a test for a trapdoor returns true.
 
 ### Conceptual Overview
+Components: [PEKS](https://github.com/Praz314159/Public-Key-Encryption-with-Keyword-Search/raw/master/PublicKeyEncryptionwithKeywordSearch.pdf) (*page 3*)
 
+<img src="https://github.com/Praz314159/Public-Key-Encryption-with-Keyword-Search/raw/master/images/components.png" width=600>
+
+Email Structure: [PEKS](https://github.com/Praz314159/Public-Key-Encryption-with-Keyword-Search/raw/master/PublicKeyEncryptionwithKeywordSearch.pdf) (*page 2*)
+
+<img src="https://github.com/Praz314159/Public-Key-Encryption-with-Keyword-Search/raw/master/images/email_peks.png" width=400>
 
 ### Prerequisites
 
