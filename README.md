@@ -10,7 +10,7 @@ Email is a common area where this concept can be applied. Suppose Bob is sending
 like her mailserver to send messages containing the word 'urgent' to her mobile phone, while messages containing 'lunch' to 
 her desktop. Alice can accomplish this, by generating a trapdoor for both 'lunch' and 'urgent' and giving them to the mailserver.
 Bob can then use Alice's public key to encrypt each of the keywords in his email and append the results to his email. When the email 
-arrives at the server. Alice can instruct the server to handle each situation accordingly when a test for a trapdoor returns true.
+arrives at the server. Alice can instruct the server to handle each situation accordingly when a keyword is detected.
 
 ### Conceptual Overview
 Components: [PEKS](https://github.com/Praz314159/Public-Key-Encryption-with-Keyword-Search/raw/master/PublicKeyEncryptionwithKeywordSearch.pdf) (*page 3*)
@@ -40,12 +40,13 @@ Then, run:
 $ sudo ./pbcinstall.sh
 ```
 
-#### Docker Installing
-A Docker container is also available.
+#### Docker Container
 
 ```
-Please run this. ???.. (Dov)
+# docker run -it dms833/peks /bin/bash
 ```
+
+This will run a bash shell in a docker container where all the prerequisites have been installed. This repo will be available at `/peks`.
 
 
 ## Running PEKS
