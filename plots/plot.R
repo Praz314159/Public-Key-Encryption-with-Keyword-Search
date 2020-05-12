@@ -39,7 +39,37 @@ q <- ggplot(td, aes(x=N,y=GEN,color=as.factor(SP),group=as.factor(SP))) +
   theme_bw(base_size=12) +
   theme(plot.title = element_text(hjust=0.5))
 
-ggsave(plot=q, "trapdoor_gen.png")
+ggsave(plot=q, "td_gen.png")
+
+q <- ggplot(bm, aes(x=N,y=GEN,color=as.factor(SP),group=as.factor(SP))) +
+  geom_point() +
+  geom_line() +
+  geom_errorbar(aes(ymin=GENmin,ymax=GENmax)) +
+  labs(
+    title = "Blinear Map KeyGen",
+    color = "Key Size (bits)",
+    x = "Number of Keywords",
+    y="Time (s)"
+  ) +
+  theme_bw(base_size=12) +
+  theme(plot.title = element_text(hjust=0.5))
+
+ggsave(plot=q, "bm_gen.png")
+
+q <- ggplot(td, aes(x=N,y=log(GEN,base=2),color=as.factor(SP),group=as.factor(SP))) +
+  geom_point() +
+  geom_line() +
+  geom_errorbar(aes(ymin=log(GENmin,base=2),ymax=log(GENmax,base=2))) +
+  labs(
+    title = "Trapdoor Pemutation KeyGen (log scale)",
+    color = "Key Size (bits)",
+    x = "Number of Keywords",
+    y="Log of Time"
+  ) +
+  theme_bw(base_size=12) +
+  theme(plot.title = element_text(hjust=0.5))
+
+ggsave(plot=q, "td_gen_log.png")
 
 q <- ggplot(bm, aes(x=N,y=PEKS,color=as.factor(SP),group=as.factor(SP))) +
   geom_point() +
@@ -117,7 +147,7 @@ q <- ggplot(data, aes(x=N,y=PEKS,color=as.factor(SP),group=as.factor(SP))) +
   facet_grid(~ MODE, labeller=as_labeller(labels)) +
   labs(
     title = "PEKS",
-    color="Group Size (bits)",
+    color="Key Size (bits)",
     x = "Number of Keywords",
     y = "Time (s)"
   ) +
@@ -125,3 +155,19 @@ q <- ggplot(data, aes(x=N,y=PEKS,color=as.factor(SP),group=as.factor(SP))) +
   theme(plot.title = element_text(hjust=0.5))
 
 ggsave(plot=q, "all_peks.png", width=10)
+
+q <- ggplot(data, aes(x=N,y=TEST,color=as.factor(SP),group=as.factor(SP))) +
+  geom_point() +
+  geom_line() +
+  geom_errorbar(aes(ymin=TESTmin,ymax=TESTmax)) +
+  facet_grid(~ MODE, labeller=as_labeller(labels)) +
+  labs(
+    title = "TEST",
+    color="Key Size (bits)",
+    x = "Number of Keywords",
+    y = "Time (s)"
+  ) +
+  theme_bw(base_size=12) +
+  theme(plot.title = element_text(hjust=0.5))
+
+ggsave(plot=q, "all_test.png", width=10)
