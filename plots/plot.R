@@ -156,6 +156,36 @@ q <- ggplot(data, aes(x=N,y=PEKS,color=as.factor(SP),group=as.factor(SP))) +
 
 ggsave(plot=q, "all_peks.png", width=10)
 
+q <- ggplot(bm, aes(x=N,y=TEST,color=as.factor(SP),group=as.factor(SP))) +
+  geom_point() +
+  geom_line() +
+  geom_errorbar(aes(ymin=TESTmin,ymax=TESTmax)) +
+  labs(
+    title = "Bilinear Map TEST",
+    color="Key Size (bits)",
+    x = "Number of Keywords",
+    y = "Time (s)"
+  ) +
+  theme_bw(base_size=12) +
+  theme(plot.title = element_text(hjust=0.5))
+
+ggsave(plot=q, "bm_test.png")
+
+q <- ggplot(td, aes(x=N,y=TEST,color=as.factor(SP),group=as.factor(SP))) +
+  geom_point() +
+  geom_line() +
+  geom_errorbar(aes(ymin=TESTmin,ymax=TESTmax)) +
+  labs(
+    title = "Trapdoor Permutation TEST",
+    color="Key Size (bits)",
+    x = "Number of Keywords",
+    y = "Time (s)"
+  ) +
+  theme_bw(base_size=12) +
+  theme(plot.title = element_text(hjust=0.5))
+
+ggsave(plot=q, "td_test.png")
+
 q <- ggplot(data, aes(x=N,y=TEST,color=as.factor(SP),group=as.factor(SP))) +
   geom_point() +
   geom_line() +
