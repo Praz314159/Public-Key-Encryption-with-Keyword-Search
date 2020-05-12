@@ -1,15 +1,35 @@
 
 library(ggplot2)
+library(reshape2)
+library(plyr)
+library(boot)
+library(simpleboot)
 
-data <- read.csv("timings.csv")
+# datFull <- read.csv("timings.csv")
+datFull <- read.csv("timings/timings--2020-05-11--23-19-33.csv")
+
+data <- ddply(datFull, c("MODE", "N", "SP"), summarise,
+              GENmin = boot.ci(one.boot(GEN, mean, R=100), type="basic")$basic[4],
+              GENmax = boot.ci(one.boot(GEN, mean, R=100), type="basic")$basic[5],
+              GEN = mean(GEN),
+              PEKSmin = boot.ci(one.boot(PEKS, mean, R=100), type="basic")$basic[4],
+              PEKSmax = boot.ci(one.boot(PEKS, mean, R=100), type="basic")$basic[5],
+              PEKS = mean(PEKS),
+              TRAPDOORmin = boot.ci(one.boot(TRAPDOOR, mean, R=100), type="basic")$basic[4],
+              TRAPDOORmax = boot.ci(one.boot(TRAPDOOR, mean, R=100), type="basic")$basic[5],
+              TRAPDOOR = mean(TRAPDOOR),
+              TESTmin = boot.ci(one.boot(TEST, mean, R=100), type="basic")$basic[4],
+              TESTmax = boot.ci(one.boot(TEST, mean, R=100), type="basic")$basic[5],
+              TEST = mean(TEST)
+        )
 
 bm <- data[data$MODE=="bm", ]
 td <- data[data$MODE=="td", ]
-td <- td[td$N < 100, ]
 
 q <- ggplot(td, aes(x=N,y=GEN,color=as.factor(SP),group=as.factor(SP))) +
   geom_point() +
   geom_line() +
+  geom_errorbar(aes(ymin=GENmin,ymax=GENmax)) +
   labs(
     title = "Trapdoor Pemutation KeyGen",
     color = "Key Size (bits)",
@@ -19,11 +39,12 @@ q <- ggplot(td, aes(x=N,y=GEN,color=as.factor(SP),group=as.factor(SP))) +
   theme_bw(base_size=12) +
   theme(plot.title = element_text(hjust=0.5))
 
-# ggsave(plot=q, "trapdoor_gen.png")
+ggsave(plot=q, "trapdoor_gen.png")
 
 q <- ggplot(bm, aes(x=N,y=PEKS,color=as.factor(SP),group=as.factor(SP))) +
   geom_point() +
   geom_line() +
+  geom_errorbar(aes(ymin=PEKSmin,ymax=PEKSmax)) +
   labs(
     title = "Bilinear Map PEKS",
     color="Group Size (bits)",
@@ -33,32 +54,74 @@ q <- ggplot(bm, aes(x=N,y=PEKS,color=as.factor(SP),group=as.factor(SP))) +
   theme_bw(base_size=12) +
   theme(plot.title = element_text(hjust=0.5))
 
-# ggsave(plot=q, "bm_peks.png")
+ggsave(plot=q, "bm_peks.png")
 
 # Plot d(PEKS)/dN against the security parameter (bilinear)
 
-spx = unique(bm$SP)
-slopes = c()
-for (sp in spx) {
-  bmsp <- bm[bm$SP == sp, ]
-  model <- lm(bmsp$PEKS ~ bmsp$N)
-  slopes <- c(slopes, model$coefficients[2])
-}
-dPEKSdN <- data.frame("SP" = spx, "rate" = slopes)
+rates <- ddply(data, c("MODE", "SP"), summarise,
+               dGENdN = lm(GEN ~ N)$coefficients[2],
+               dPEKdN = lm(PEKS ~ N)$coefficients[2],
+               dTRAPdN = lm(TRAPDOOR ~ N)$coefficients[2],
+               dTESTdN = lm(TEST ~ N)$coefficients[2]
+        )
 
-# Plot KeyGen against security parameter (bilinear scheme)
-q <- ggplot(dPEKSdN, aes(x=SP, y=rate)) +
+q <- ggplot(rates[rates$MODE=="bm",], aes(x=SP, y=dPEKdN)) +
   geom_point() +
   geom_line() +
   labs(
-    title = "Rate of Bilinear Map PEKS",
-    x = "Order of P (bits)",
-    y = "Rate"
+    title = "Bilinear Map PEKS Rates",
+    x = "Group Size (bits)",
+    y = "Rate (s/kw)"
   ) +
   theme_bw(base_size=12) +
   theme(plot.title = element_text(hjust=0.5))
 
+ggsave(plot=q, "bm_dpeks_dn.png")
+
+q <- ggplot(rates[rates$MODE=="td",], aes(x=SP, y=dPEKdN)) +
+  geom_point() +
+  geom_line() +
+  labs(
+    title = "Trapdoor Permutation PEKS Rates",
+    x = "Key Size (bits)",
+    y = "Rate (s/kw)"
+  ) +
+  theme_bw(base_size=12) +
+  theme(plot.title = element_text(hjust=0.5))
+
+ggsave(plot=q, "td_dpeks_dn.png")
+
 # Plot PEKS against security parameter (group by N) (trapdoor permutations)
 
-# (optional) d(PEKS)/d(SP) (group by N) (trapdoor permutation)
+q <- ggplot(td, aes(x=N,y=PEKS,color=as.factor(SP),group=as.factor(SP))) +
+  geom_point() +
+  geom_line() +
+  geom_errorbar(aes(ymin=PEKSmin,ymax=PEKSmax)) +
+  labs(
+    title = "Trapdoor Permutation PEKS",
+    color="Group Size (bits)",
+    x = "Number of Keywords",
+    y = "Time (s)"
+  ) +
+  theme_bw(base_size=12) +
+  theme(plot.title = element_text(hjust=0.5))
 
+ggsave(plot=q, "td_peks.png")
+
+labels <- c(`bm` = "Bilinear Map", `td` = "Trapdoor Permutation")
+
+q <- ggplot(data, aes(x=N,y=PEKS,color=as.factor(SP),group=as.factor(SP))) +
+  geom_point() +
+  geom_line() +
+  geom_errorbar(aes(ymin=PEKSmin,ymax=PEKSmax)) +
+  facet_grid(~ MODE, labeller=as_labeller(labels)) +
+  labs(
+    title = "PEKS",
+    color="Group Size (bits)",
+    x = "Number of Keywords",
+    y = "Time (s)"
+  ) +
+  theme_bw(base_size=12) +
+  theme(plot.title = element_text(hjust=0.5))
+
+ggsave(plot=q, "all_peks.png", width=10)
