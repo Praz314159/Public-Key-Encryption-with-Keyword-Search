@@ -12,17 +12,22 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-There are several prerequisies required to run PEKS.
+There are several prerequisies required to run PEKS. You can install PEKS on your system manually
+or use Docker to gather the prerequisites for you.
+
+* Ubuntu 18.04 (lower may work) or WSL
+
+#### Manual Installation
+
+
 
 ```
 Give examples
 ```
 
-### Installing
+#### Docker Installing
 
-A step by step series of examples that tell you how to get a development env running
-
-Say what the step will be
+Some text explaining.
 
 ```
 Give the example
