@@ -66,14 +66,23 @@ Give an example
 Add additional notes about how to deploy this on a live system
 
 ## Built With
+* Pycryptodome (https://github.com/Legrandin/pycryptodome)
+* Pypbc (https://github.com/debatem1/pypbc)
+  * *Some minor fixes needed to be made* (https://github.com/dmsalomon/pypbc)
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+
+## Developers
+* Jonathan Alter
+* Prashanth Ramakrishna
+* Dov Salomon
+* Hao Shu
 
 ## Authors
-
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
+* *Public Key Encryption with keyword Search* by:
+  - **Dan Boneh** 
+  - **Giovanni Di Crescenzo** 
+  - **Rafail Ostrovsky**
+  - **Giuseppe Persianoz**
 
 See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
