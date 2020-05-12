@@ -8,6 +8,8 @@ keypairs*
 # C extensions
 *.so
 
+*.swp
+
 # Distribution / packaging
 .Python
 build/

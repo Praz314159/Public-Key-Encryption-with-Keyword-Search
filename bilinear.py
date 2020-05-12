@@ -1,8 +1,9 @@
-from pypbc import *
-import hashlib
-import secrets
+
 import os
 import math
+
+from pypbc import *
+from Crypto.Hash import SHA3_512
 
 class Key:
     def __init__(self, params, priv, pubg, pubh):
@@ -59,13 +60,17 @@ class BilinearMap:
         return Key(params, priv, pubg, pubh)
 
     def H1(self, W):
-        W_hash = hashlib.sha512(W.encode('utf-8')).digest()
+        h = SHA3_512.new()
+        h.update(W.encode('utf-8'))
+        W_hash = h.digest()
         H1_W = Element.from_hash(self.key.pairing, G1, W_hash)
         return H1_W
 
     def H2(self, G2):
         s = str(G2)
-        s_hash = hashlib.sha512(s.encode('utf-8')).digest()
+        h = SHA3_512.new()
+        h.update(s.encode('utf-8'))
+        s_hash = h.digest()
         H2_hash = s_hash[:math.ceil(self.key.logp/8)]
         return H2_hash
 
